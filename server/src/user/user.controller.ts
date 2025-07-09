@@ -7,28 +7,63 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
-  @Post()
+  @Post('parent')
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
-  @Get()
-  findAll() {
-    return this.userService.findAll();
+  @Post('child')
+  createChild(@Body() createUserDto: CreateUserDto) {
+    return this.userService.createChild(createUserDto);
   }
 
-  @Get(':id')
+  @Get('parents')
+  findAllParents() {
+    return this.userService.findAllParents();
+  }
+
+  @Get('children')
+  findAllChildren() {
+    return this.userService.findAllChildren();
+  }
+
+  @Get('parent/:id')
   findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+    return this.userService.findParent(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  @Get('child/:id')
+  findChild(@Param('id') id: string) {
+    return this.userService.findChild(id);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  @Patch('parent/:id')
+  updateParent(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.userService.updateParent(id, updateUserDto);
+  }
+
+  @Patch('parent/:id')
+  updateChild(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.userService.updateChild(id, updateUserDto);
+  }
+
+  @Delete('parent/:id')
+  removeParent(@Param('id') id: string) {
+    return this.userService.removeParent(id);
+  }
+
+  @Delete('child/:id')
+  removeChild(@Param('id') id: string) {
+    return this.userService.removeChild(id);
+  }
+
+  @Post('parent/login')
+  parentLogin(@Body() createUserDto: CreateUserDto) {
+    return this.userService.parentLogin(createUserDto);
+  }
+
+  @Post('child/login')
+  childLogin(@Body() createUserDto: CreateUserDto) {
+    return this.userService.childLogin(createUserDto);
   }
 }

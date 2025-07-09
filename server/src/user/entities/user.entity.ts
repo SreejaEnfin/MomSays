@@ -10,10 +10,10 @@ export class User extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column({ type: 'varchar', length: 50, unique: true })
+    @Column({ type: 'varchar', length: 50, unique: true, nullable: true })
     email: string;
 
-    @Column({ type: 'varchar', length: 50, nullable: true })
+    @Column({ type: 'varchar', length: 150, nullable: true })
     password: string;
 
     @Column({ type: 'varchar', length: 50 })
@@ -28,6 +28,9 @@ export class User extends BaseEntity {
     @Column({ type: 'varchar', length: 50, nullable: true })
     parentId: string | null;
 
-    @Column({ type: "varchar", length: 50 })
+    @Column({ type: "varchar", length: 50, nullable: true })
     phone: string;
+
+    @Column({ type: 'varchar', length: 50, nullable: true })
+    avatar: string | null;
 }

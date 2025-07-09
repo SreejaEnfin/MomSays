@@ -2,7 +2,7 @@ import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColu
 import { User } from "./user.entity";
 
 
-@Entity({ name: 'child_alias' })
+@Entity({ database: 'postgres', name: 'child_alias' })
 export class ChildAlias extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
