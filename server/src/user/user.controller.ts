@@ -57,13 +57,13 @@ export class UserController {
     return this.userService.removeChild(id);
   }
 
-  @Post('parent/login')
-  parentLogin(@Body() createUserDto: CreateUserDto) {
-    return this.userService.parentLogin(createUserDto);
+  @Post('parent/forgot-password')
+  parentForgotPassword(@Body() createUserDto: CreateUserDto) {
+    return this.userService.parentForgotPassword(createUserDto);
   }
 
-  @Post('child/login')
-  childLogin(@Body() createUserDto: CreateUserDto) {
-    return this.userService.childLogin(createUserDto);
+  @Post('parent/reset-password')
+  parentResetPassword(@Body() createUserDto: CreateUserDto) {
+    return this.userService.parentResetPassword(createUserDto);
   }
 }

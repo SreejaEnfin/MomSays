@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Welcome to MomSays</title>
+</head>
+
+<body style="font-family: Arial, sans-serif; background: #f7f7f7; padding: 20px;">
+    <div
+        style="background: white; max-width: 600px; margin: auto; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px #ccc;">
+
+        <div style="text-align: center;">
+            <img src="<%= S3_URL %>/logo.png" alt="MomSays Logo" style="width: 120px;" />
+        </div>
+
+        <h2 style="text-align: center; color: #4caf50;">
+            Hello from MomSays! 🎉
+        </h2>
+
+        <p>Dear Parent,</p>
+        <p>We're happy to let you know that your child <strong>
+                <%= name %>
+            </strong> has been successfully registered on <strong>MomSays</strong>.</p>
+
+        <p>Please share this alias <strong>
+                <%= alias %>
+            </strong> with your child — they’ll use it to log in and start their learning
+            journey filled
+            with encouragement, joy, and love. 💖</p>
+
+        <p>If you ever need to change the alias or update details, just log into your Parent Dashboard.</p>
+        <p>Thank you,<br />The MomSays Team</p>
+        <br />
+        <p style="color: gray; font-size: 12px;">© 2025 MomSays. All rights reserved.</p>
+    </div>
+</body>
+
+</html>

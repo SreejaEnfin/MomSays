@@ -6,6 +6,8 @@ import { User, UserRole } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { ChildAlias } from './entities/child-alias.entity';
 import * as bcrypt from 'bcrypt';
+import { JwtService } from 'src/auth/jwt.service';
+import { afterPasswordResetEmail, childWelcomeEmail, passwordResetEmail, sendWelcomeEmail } from 'src/email/email.service';
 
 @Injectable()
 export class UserService {
@@ -16,11 +18,12 @@ export class UserService {
 
     @InjectRepository(ChildAlias)
     private readonly childAliasRepo: Repository<ChildAlias>,
+    private readonly jwtService: JwtService, // Assuming JwtService is imported correctly
   ) { }
 
   async create(createUserDto: CreateUserDto) {
     try {
-      const { password } = createUserDto;
+      const { name, email, password } = createUserDto;
       let hashedPassword = '';
       if (password) {
         const salt = 10;
@@ -37,6 +40,12 @@ export class UserService {
       const newUser = await this.userRepo.create(createUserDto);
       const response = await this.userRepo.save(newUser);
 
+      await sendWelcomeEmail(
+        email !== undefined ? email : '',
+        name !== undefined ? name : ''
+      );
+
+
       return {
         status: 'success',
         message: 'Parent created successfully',
@@ -52,6 +61,23 @@ export class UserService {
 
   async createChild(createUserDto: CreateUserDto) {
     try {
+      const { name, parentId, alias } = createUserDto;
+      if (!createUserDto.alias) {
+        return {
+          status: 'error',
+          message: 'Alias is required to create a child profile.',
+        };
+      }
+      const parent = await this.userRepo.findOne({
+        where: { id: parentId, role: UserRole.PARENT },
+      });
+
+      if (parent === null) {
+        return {
+          status: 'error',
+          message: 'Parent not found or does not exist.',
+        };
+      }
       if (createUserDto.role !== UserRole.CHILD) {
         return {
           status: 'error',
@@ -59,14 +85,6 @@ export class UserService {
         };
       }
 
-      if (!createUserDto.alias) {
-        return {
-          status: 'error',
-          message: 'Alias is required to create a child profile.',
-        };
-      }
-
-      // Check if alias is already used
       const existingAlias = await this.childAliasRepo.findOne({
         where: { alias: createUserDto.alias },
       });
@@ -78,6 +96,7 @@ export class UserService {
         };
       }
 
+      const email = parent.email;
       const newUser = this.userRepo.create(createUserDto);
       const savedUser = await this.userRepo.save(newUser);
 
@@ -87,6 +106,11 @@ export class UserService {
           child: savedUser,
         });
         const savedAlias = await this.childAliasRepo.save(aliasEntity);
+        await childWelcomeEmail(
+          email !== undefined ? email : '',
+          name !== undefined ? name : '',
+          alias !== undefined ? alias : ''
+        );
 
         return {
           status: 'success',
@@ -311,92 +335,78 @@ export class UserService {
     }
   }
 
-  async parentLogin(createUserDto: CreateUserDto) {
+  async parentForgotPassword(createUserDto: CreateUserDto) {
     try {
-      const { email, password } = createUserDto;
-      if (!email || !password) {
+      const { email } = createUserDto;
+      if (!email) {
         return {
           status: 'error',
-          message: 'Email and password are required for login',
+          message: 'Email is required to reset password',
         }
       }
-      const user = await this.userRepo.findOne({ where: { email } });
+      const user = await this.userRepo.findOne({ where: { email, role: UserRole.PARENT } });
       if (!user) {
         return {
           status: 'error',
-          message: 'User not found',
+          message: 'Parent not found with the provided email',
         }
       }
-      const isPasswordValid = await bcrypt.compare(password, user.password);
-      if (!isPasswordValid) {
+      const token = await this.jwtService.signToken({ id: user.id }, '15m');
+      if (!token) {
         return {
           status: 'error',
-          message: 'Invalid password',
+          message: 'Failed to generate reset token',
         }
       }
+      const resetLink = `${process.env.CLIENT_SIDE_URL}}/reset-password/${token}`;
+      await passwordResetEmail(email, user.name, resetLink);
       return {
         status: 'success',
-        message: 'Login successful',
-        data: {
-          id: user.id,
-          name: user.name,
-          role: user.role,
-          email: user.email,
-          phone: user.phone,
-          avatar: user.avatar,
-        },
+        message: 'Password reset instructions sent to your email',
       }
     } catch (e) {
       return {
         status: 'error',
-        message: e.message || 'Failed to login',
+        message: e.message || 'Failed to process forgot password request',
       }
     }
   }
 
-  async childLogin(createUserDto: CreateUserDto) {
+  async parentResetPassword(resetPasswordData: any) {
     try {
-      const { alias } = createUserDto;
-      if (!alias) {
+      const { token, password } = resetPasswordData;
+      if (!token || !password) {
         return {
           status: 'error',
-          message: 'Alias is required for child login',
+          message: 'Token and new password are required to reset password',
         }
       }
-      const childAlias = await this.childAliasRepo.findOne({
-        where: { alias },
-        relations: ['child'],
-      });
-      if (!childAlias) {
+      const data = await this.jwtService.verifyToken(token);
+      if (!data) {
         return {
           status: 'error',
-          message: 'Alias not found',
+          message: 'Invalid or expired token',
         }
       }
-      const child = childAlias.child;
-      if (!child) {
+      const user = await this.userRepo.findOne({ where: { id: data.id, role: UserRole.PARENT } });
+      if (!user) {
         return {
           status: 'error',
-          message: 'Child not found for the given alias',
+          message: 'Parent not found with the provided ID',
         }
       }
+      const salt = 10;
+      user.password = await bcrypt.hash(password, salt);
+      await this.userRepo.save(user);
+      await afterPasswordResetEmail(user.email, user.name);
       return {
         status: 'success',
-        message: 'Login successful',
-        data: {
-          id: child.id,
-          name: child.name,
-          role: child.role,
-          avatar: child.avatar,
-          alias: childAlias.alias,
-          parentId: child.parentId,
-        },
+        message: 'Password reset successfully',
       }
-
     } catch (e) {
       return {
         status: 'error',
-        message: e.message || 'Failed to login',
+        message: e.message || 'Failed to reset password',
       }
     }
   }
