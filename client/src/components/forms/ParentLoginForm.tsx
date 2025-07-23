@@ -24,7 +24,7 @@ function ParentLoginForm({ onSubmit }: ParentLoginFormProps) {
         >
             <div className="flex justify-center mb-2">
                 <img
-                    src={`${import.meta.env.S3_URL}/logo.png`}
+                    src={`${import.meta.env.VITE_S3_URL}/logo.png`}
                     alt="MomSays Logo"
                     className="w-28 h-auto"
                 />

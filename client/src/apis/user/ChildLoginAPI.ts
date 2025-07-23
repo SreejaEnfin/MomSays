@@ -1,6 +1,18 @@
+import { jwtDecode } from "jwt-decode";
+
 type ChildLoginForm = {
     alias: string;
 };
+
+type DecodedTokenType = {
+    id: string;
+    name: string;
+    role: string;
+    iat: number;
+    exp: number;
+    parentId: string;
+    alias: string;
+}
 
 export const ChildLoginAPI = async (data: ChildLoginForm) => {
     try {
@@ -14,7 +26,9 @@ export const ChildLoginAPI = async (data: ChildLoginForm) => {
 
         if (response.ok) {
             const result = await response.json();
-            localStorage.setItem('childToken', result.data);
+            sessionStorage.setItem('childToken', result.data);
+            const decoded: DecodedTokenType = jwtDecode(result.data);
+            localStorage.setItem('childData', JSON.stringify(decoded));
             return result;
         } else {
             const error = await response.json();

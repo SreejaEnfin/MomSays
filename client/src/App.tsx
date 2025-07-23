@@ -3,11 +3,11 @@ import './index.css'
 import LandingPage from './pages/LandingPage'
 import ChildLoginPage from './pages/ChildLoginPage'
 import ParentLoginPage from './pages/ParentLoginPage'
-import ParentDashboard from './pages/ParentDashboard'
+import ParentDashboard from './pages/ParentDashboardPage'
 import ChildDashboard from './pages/ChildDashboard'
-import PasswordReset from './pages/PasswordReset'
+import PasswordReset from './pages/PasswordResetPage'
 import ForgotPassword from './pages/ForgotPasswordPage'
-import ParentRegister from './pages/ParentRegister'
+import ParentRegister from './pages/ParentRegisterPage'
 
 function App() {
   return (

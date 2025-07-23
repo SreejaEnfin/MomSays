@@ -25,6 +25,13 @@ function ParentRegisterForm({ onSubmit }: ParentRegisterFormProps) {
     return (
         <div>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                <div className="flex justify-center mb-2">
+                    <img
+                        src={`${import.meta.env.VITE_S3_URL}/logo.png`}
+                        alt="MomSays Logo"
+                        className="w-28 h-auto"
+                    />
+                </div>
                 {/* Name */}
                 <div>
                     <Controller

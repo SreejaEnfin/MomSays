@@ -5,7 +5,7 @@ type PasswordReset = {
 
 export const PasswordRestAPI = async (data: PasswordReset) => {
     try {
-        const response = await fetch(`${import.meta.env.BACKEND_URL}/user/parent/reset-password`, {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/user/parent/reset-password`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ token: data?.token, password: data?.password }),

@@ -1,6 +1,16 @@
+import { jwtDecode } from 'jwt-decode';
 type LoginFormInputs = {
     email: string;
     password: string;
+};
+
+type DecodedTokenType = {
+    id: string;
+    email: string;
+    role: string;
+    iat: number;
+    exp: number;
+    name: string;
 };
 
 export const ParentLoginAPI = async (data: LoginFormInputs) => {
@@ -15,8 +25,9 @@ export const ParentLoginAPI = async (data: LoginFormInputs) => {
 
         if (response.ok) {
             const result = await response.json();
-            console.log(result)
-            localStorage.setItem('parentToken', result.data);
+            sessionStorage.setItem('parentToken', result.data);
+            const decoded: DecodedTokenType = jwtDecode(result.data);
+            localStorage.setItem('parentData', JSON.stringify(decoded));
             return result;
         } else {
             const error = await response.json();

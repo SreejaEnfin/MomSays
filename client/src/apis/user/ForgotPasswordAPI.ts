@@ -4,13 +4,15 @@ type ForgotPasswordForm = {
 
 export const ForgotPasswordAPI = async (data: ForgotPasswordForm) => {
     try {
-        const response = await fetch(`${import.meta.env.BACKEND_URL}/user/parent/forgot-password`, {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/user/parent/forgot-password`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ email: data.email })
         });
+
+        console.log(response, "response from forgot password API");
 
         if (response.ok) {
             const result = await response.json();

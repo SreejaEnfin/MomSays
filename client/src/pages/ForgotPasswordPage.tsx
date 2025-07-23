@@ -8,13 +8,15 @@ type ForgotPasswordForm = {
 
 function ForgotPasswordPage() {
     const [message, setMessage] = useState('');
+    const [resetKey, setResetKey] = useState(0);
 
     const handleForgotPassword = async (data: ForgotPasswordForm) => {
         try {
             const response = await ForgotPasswordAPI(data);
 
             if (response.status === 'success') {
-                setMessage('📧 A reset link has been sent to your email.');
+                setMessage('📧 If this email is registered, a reset link has been sent.');
+                setResetKey(prevKey => prevKey + 1);
             } else {
                 setMessage(`❌ ${response.message || 'Failed to send email.'}`);
             }
@@ -25,7 +27,7 @@ function ForgotPasswordPage() {
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-green-50">
-            <ForgotPasswordForm onSubmit={handleForgotPassword} message={message} />
+            <ForgotPasswordForm onSubmit={handleForgotPassword} message={message} key={resetKey} />
         </div>
     );
 }

@@ -7,7 +7,7 @@ type RegisterFormInputs = {
     role: string;
 };
 export const handleParentRegistrationAPI = async (data: RegisterFormInputs) => {
-    const response = await fetch(`${import.meta.env.BACKEND_URL}/user/parent`, {
+    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/user/parent`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
