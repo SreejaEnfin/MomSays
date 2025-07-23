@@ -1,16 +1,24 @@
-// src/auth/jwt.service.ts
 import { Injectable } from '@nestjs/common';
-import * as jwt from 'jsonwebtoken';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
-export class JwtService {
-    private readonly jwtSecret = process.env.JWT_SECRET;
+export class AuthJwtService {
+    constructor(private readonly jwtService: JwtService) { }
 
-    signToken(payload: any, expiresIn: string = '1d') {
-        return jwt.sign(payload, this.jwtSecret, { expiresIn });
+    async signToken(payload: any, expiresIn = '1d') {
+        try {
+            const token = await this.jwtService.signAsync(payload, { secret: process.env.JWT_SECRET, expiresIn });
+            return token;
+        } catch (error) {
+            throw new Error(`Token generation failed: ${error.message}`);
+        }
     }
 
     verifyToken(token: string) {
-        return jwt.verify(token, this.jwtSecret);
+        try {
+            return this.jwtService.verify(token);
+        } catch (e) {
+            throw e;
+        }
     }
 }

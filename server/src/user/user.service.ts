@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User, UserRole } from './entities/user.entity';
+import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
-import { ChildAlias } from './entities/child-alias.entity';
 import * as bcrypt from 'bcrypt';
-import { JwtService } from 'src/auth/jwt.service';
 import { afterPasswordResetEmail, childWelcomeEmail, passwordResetEmail, sendWelcomeEmail } from 'src/email/email.service';
+import { AuthJwtService } from 'src/auth/jwt.service';
+import { UserRole } from 'src/utils/enums/role.enum';
 
 @Injectable()
 export class UserService {
@@ -16,9 +16,7 @@ export class UserService {
     @InjectRepository(User)
     private userRepo: Repository<User>,
 
-    @InjectRepository(ChildAlias)
-    private readonly childAliasRepo: Repository<ChildAlias>,
-    private readonly jwtService: JwtService, // Assuming JwtService is imported correctly
+    private readonly jwtService: AuthJwtService, // Assuming JwtService is imported correctly
   ) { }
 
   async create(createUserDto: CreateUserDto) {
@@ -30,7 +28,7 @@ export class UserService {
         hashedPassword = await bcrypt.hash(password, salt);
       }
       createUserDto.password = hashedPassword;
-      if (createUserDto.role !== UserRole.PARENT) {
+      if (createUserDto.role !== UserRole.PARENT && createUserDto.role !== UserRole.ADMIN) {
         return {
           status: 'error',
           message: 'Only parent role is allowed here.',
@@ -61,13 +59,60 @@ export class UserService {
 
   async createChild(createUserDto: CreateUserDto) {
     try {
-      const { name, parentId, alias } = createUserDto;
-      if (!createUserDto.alias) {
+      const { name, parentId, alias, language, avatar, age } = createUserDto;
+      if (!name) {
+        return {
+          status: 'error',
+          message: 'Name is required to create a child profile.',
+        };
+      }
+
+      if (!alias) {
         return {
           status: 'error',
           message: 'Alias is required to create a child profile.',
         };
       }
+
+      if (!parentId) {
+        return {
+          status: 'error',
+          message: 'ParentId is missing.',
+        };
+      }
+
+      if (!language) {
+        return {
+          status: 'error',
+          message: 'Language is required to create a child profile.',
+        };
+      }
+
+      if (!avatar) {
+        return {
+          status: 'error',
+          message: 'Please select an avatar for your child.',
+        };
+      }
+
+      if (!age) {
+        return {
+          status: 'error',
+          message: 'Please specify the age of your child',
+        };
+      }
+
+      const existingAlias = await this.userRepo.findOne({
+        where: { alias },
+      });
+
+      if (existingAlias) {
+        return {
+          status: 'error',
+          message: 'Alias already taken. Please choose another one.',
+        };
+      }
+
       const parent = await this.userRepo.findOne({
         where: { id: parentId, role: UserRole.PARENT },
       });
@@ -85,48 +130,21 @@ export class UserService {
         };
       }
 
-      const existingAlias = await this.childAliasRepo.findOne({
-        where: { alias: createUserDto.alias },
-      });
-
-      if (existingAlias) {
-        return {
-          status: 'error',
-          message: 'Alias already taken. Please choose another one.',
-        };
-      }
-
       const email = parent.email;
       const newUser = this.userRepo.create(createUserDto);
       const savedUser = await this.userRepo.save(newUser);
 
-      try {
-        const aliasEntity = this.childAliasRepo.create({
-          alias: createUserDto.alias,
-          child: savedUser,
-        });
-        const savedAlias = await this.childAliasRepo.save(aliasEntity);
-        await childWelcomeEmail(
-          email !== undefined ? email : '',
-          name !== undefined ? name : '',
-          alias !== undefined ? alias : ''
-        );
+      await childWelcomeEmail(
+        email !== undefined ? email : '',
+        name !== undefined ? name : '',
+        alias !== undefined ? alias : ''
+      );
 
-        return {
-          status: 'success',
-          message: 'Child created successfully with alias.',
-          user: savedUser,
-          alias: savedAlias,
-        };
-      } catch (aliasErr) {
-        await this.userRepo.delete(savedUser.id);
-
-        return {
-          status: 'error',
-          message: 'Alias creation failed. Child user was not saved.',
-          details: aliasErr.message,
-        };
-      }
+      return {
+        status: 'success',
+        message: 'Child created successfully with alias.',
+        user: savedUser,
+      };
     } catch (e) {
       console.error('Create child error:', e);
       return {
@@ -209,13 +227,11 @@ export class UserService {
   async findChild(id: string) {
     try {
       const child = await this.userRepo.findOne({ where: { id, role: UserRole.CHILD } });
-      const childAlias = await this.childAliasRepo.findOne({ where: { child: { id, role: UserRole.CHILD } } });
-      if (child && childAlias) {
+      if (child) {
         return {
           status: 'success',
           message: 'Child fetched successfully',
           child: child,
-          aliasDetails: childAlias,
         }
       }
     } catch (e) {
@@ -253,26 +269,46 @@ export class UserService {
 
   async updateChild(id: string, updateUserDto: UpdateUserDto) {
     try {
-      const child = await this.userRepo.findOne({ where: { id, role: UserRole.CHILD } });
+      const child = await this.userRepo.findOne({
+        where: { id, role: UserRole.CHILD },
+      });
+
       if (!child) {
         return {
           status: 'error',
           message: 'Child not found',
-        }
-      } else {
-        Object.assign(child, updateUserDto);
-        const updatedChild = await this.userRepo.save(child);
-        return {
-          status: 'success',
-          message: 'Child updated successfully',
-          data: updatedChild,
+        };
+      }
+
+      const { alias } = updateUserDto;
+
+      if (alias) {
+        const existingAlias = await this.userRepo.findOne({
+          where: { alias, role: UserRole.CHILD },
+        });
+
+        if (existingAlias && existingAlias.id !== id) {
+          return {
+            status: 'error',
+            message: 'Alias already exists for another child',
+          };
         }
       }
+
+      Object.assign(child, updateUserDto);
+      const updatedChild = await this.userRepo.save(child);
+      console.log(updatedChild, "updatedChild")
+
+      return {
+        status: 'success',
+        message: 'Child updated successfully',
+        data: updatedChild,
+      };
     } catch (e) {
       return {
         status: 'error',
         message: e.message || 'Failed to update child',
-      }
+      };
     }
   }
 
@@ -316,10 +352,6 @@ export class UserService {
           message: 'Child not found',
         }
       }
-      const alias = await this.childAliasRepo.findOne({ where: { child: { id, role: UserRole.CHILD } } });
-      if (alias) {
-        await this.childAliasRepo.delete(alias.id);
-      }
       const response = await this.userRepo.delete(id);
       if (response) {
         return {
@@ -358,7 +390,7 @@ export class UserService {
           message: 'Failed to generate reset token',
         }
       }
-      const resetLink = `${process.env.CLIENT_SIDE_URL}}/reset-password/${token}`;
+      const resetLink = `${process.env.CLIENT_SIDE_URL}/reset-password/${token}`;
       await passwordResetEmail(email, user.name, resetLink);
       return {
         status: 'success',
@@ -388,7 +420,7 @@ export class UserService {
           message: 'Invalid or expired token',
         }
       }
-      const user = await this.userRepo.findOne({ where: { id: data.id, role: UserRole.PARENT } });
+      const user = await this.userRepo.findOne({ where: { id: (data as any).id, role: UserRole.PARENT } });
       if (!user) {
         return {
           status: 'error',
@@ -408,6 +440,33 @@ export class UserService {
         status: 'error',
         message: e.message || 'Failed to reset password',
       }
+    }
+  }
+
+  async findChildrenByParentId(parentId: string) {
+    try {
+      const children = await this.userRepo.find({
+        where: { parentId, role: UserRole.CHILD },
+      });
+
+      if (!children || children.length === 0) {
+        return {
+          status: 'success',
+          message: 'No children found for this parent',
+          data: [],
+        };
+      }
+
+      return {
+        status: 'success',
+        message: 'Children fetched successfully',
+        data: children,
+      };
+    } catch (e) {
+      return {
+        status: 'error',
+        message: e.message || 'Failed to fetch children by parent ID',
+      };
     }
   }
 }

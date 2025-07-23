@@ -1,9 +1,7 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-
-export enum UserRole {
-    PARENT = 'parent',
-    CHILD = 'child',
-}
+import { TestResponse } from "src/test-response/entities/test-response.entity";
+import { TestSet } from "src/test-set/entities/test-set.entity";
+import { UserRole } from "src/utils/enums/role.enum";
+import { BaseEntity, Column, Entity, Index, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ database: 'postgres', name: 'user' })
 export class User extends BaseEntity {
@@ -31,6 +29,26 @@ export class User extends BaseEntity {
     @Column({ type: "varchar", length: 50, nullable: true })
     phone: string;
 
-    @Column({ type: 'varchar', length: 50, nullable: true })
+    @Column({ type: 'varchar', length: 100, nullable: true })
     avatar: string | null;
+
+    @Column({ type: 'varchar', length: 50, nullable: true })
+    language: string | null;
+
+    @Column({ type: 'int', nullable: true })
+    age: number | null;
+
+    @Index(['alias', 'parentId'], { unique: true })
+    @Column({ type: 'varchar', length: 50, nullable: true })
+    alias?: string;
+
+    @OneToMany(() => TestSet, (testSet) => testSet.parent)
+    testSetsAsParent: TestSet[];
+
+    @OneToMany(() => TestSet, (testSet) => testSet.child)
+    testSetsAsChild: TestSet[];
+
+    @OneToMany(() => TestResponse, (response) => response.child)
+    responses: TestResponse[];
 }
+

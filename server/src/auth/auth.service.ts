@@ -3,20 +3,16 @@ import { ParentLoginDto } from "./dto/parent-login.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "src/user/entities/user.entity";
 import { Repository } from "typeorm";
-import { ChildAlias } from "src/user/entities/child-alias.entity";
-import { JwtService } from "./jwt.service";
 import * as bcrypt from 'bcrypt';
 import { ChildLoginDto } from "./dto/child-login.dto";
+import { AuthJwtService } from "./jwt.service";
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectRepository(User)
         private userRepo: Repository<User>,
-
-        @InjectRepository(ChildAlias)
-        private readonly childAliasRepo: Repository<ChildAlias>,
-        private readonly jwtService: JwtService) { }
+        private readonly authJwtService: AuthJwtService) { }
 
     async parentLogin(loginDto: ParentLoginDto) {
         try {
@@ -42,7 +38,7 @@ export class AuthService {
                 }
             }
 
-            const token = await this.jwtService.signToken({ id: user.id, role: user.role, email: user.email, name: user.name });
+            const token = await this.authJwtService.signToken({ id: user.id, role: user.role, email: user.email, name: user.name });
             return {
                 status: 'success',
                 message: 'Login successful',
@@ -58,31 +54,27 @@ export class AuthService {
 
     async childLogin(loginDto: ChildLoginDto) {
         try {
-            const { alias } = loginDto;
+            const { alias, role } = loginDto;
             if (!alias) {
                 return {
                     status: 'error',
                     message: 'Alias is required for child login',
                 }
             }
-            const childAlias = await this.childAliasRepo.findOne({
+
+            const child = await this.userRepo.findOne({
                 where: { alias },
-                relations: ['child'],
             });
-            if (!childAlias) {
-                return {
-                    status: 'error',
-                    message: 'Alias not found',
-                }
-            }
-            const child = childAlias.child;
             if (!child) {
                 return {
                     status: 'error',
-                    message: 'Child not found for the given alias',
+                    message: 'Child with this Alias not found',
                 }
             }
-            const token = await this.jwtService.signToken({ id: child.id, name: child.name, role: child.role, alias: childAlias.alias });
+
+            console.log(child, "childddd")
+            const token = this.authJwtService.signToken({ id: child.id, name: child.name, role: child.role, alias: child.alias, parentId: child.parentId, avatar: child.avatar, language: child.language }, '2h');
+
             return {
                 status: 'success',
                 message: 'Login successful',
