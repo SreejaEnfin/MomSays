@@ -1,19 +1,8 @@
 import { jwtDecode } from 'jwt-decode';
-type LoginFormInputs = {
-    email: string;
-    password: string;
-};
+import type { DecodedTokenType } from '../../types/DecodedToken';
+import type { ParentLoginType } from '../../types/ParentLoginType';
 
-type DecodedTokenType = {
-    id: string;
-    email: string;
-    role: string;
-    iat: number;
-    exp: number;
-    name: string;
-};
-
-export const ParentLoginAPI = async (data: LoginFormInputs) => {
+export const ParentLoginAPI = async (data: ParentLoginType) => {
     try {
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/parent-login`, {
             method: 'POST',
@@ -28,13 +17,15 @@ export const ParentLoginAPI = async (data: LoginFormInputs) => {
             sessionStorage.setItem('parentToken', result.data);
             const decoded: DecodedTokenType = jwtDecode(result.data);
             localStorage.setItem('parentData', JSON.stringify(decoded));
-            return result;
+            return {
+                result: result,
+                data: decoded
+            }
         } else {
             const error = await response.json();
             throw new Error(error.message || 'Parent login failed');
         }
     } catch (e) {
-        console.error('❌ Parent login API error:', e);
         throw e;
     }
 };

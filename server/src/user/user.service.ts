@@ -297,7 +297,6 @@ export class UserService {
 
       Object.assign(child, updateUserDto);
       const updatedChild = await this.userRepo.save(child);
-      console.log(updatedChild, "updatedChild")
 
       return {
         status: 'success',

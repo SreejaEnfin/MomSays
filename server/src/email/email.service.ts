@@ -27,10 +27,8 @@ export async function sendWelcomeEmail(to: string, name: string) {
 
     try {
         const info = await transporter.sendMail(mailOptions);
-        console.log('✅ Email sent:', info.response);
         return { status: 'success', message: 'Email sent successfully' };
     } catch (error) {
-        console.error('❌ Email send error:', error);
         return { status: 'error', message: error.message };
     }
 }
@@ -58,10 +56,8 @@ export async function childWelcomeEmail(to: string, name: string, alias: string)
 
     try {
         const info = await transporter.sendMail(mailOptions);
-        console.log('✅ Email sent:', info.response);
         return { status: 'success', message: 'Email sent successfully' };
     } catch (error) {
-        console.error('❌ Email send error:', error);
         return { status: 'error', message: error.message };
     }
 }
@@ -89,10 +85,8 @@ export async function passwordResetEmail(to: string, name: string, resetLink: st
 
     try {
         const info = await transporter.sendMail(mailOptions);
-        console.log('✅ Email sent:', info.response);
         return { status: 'success', message: 'Email sent successfully' };
     } catch (error) {
-        console.error('❌ Email send error:', error);
         return { status: 'error', message: error.message };
     }
 }
@@ -120,10 +114,8 @@ export async function afterPasswordResetEmail(to: string, name: string) {
 
     try {
         const info = await transporter.sendMail(mailOptions);
-        console.log('✅ Email sent:', info.response);
         return { status: 'success', message: 'Email sent successfully' };
     } catch (error) {
-        console.error('❌ Email send error:', error);
         return { status: 'error', message: error.message };
     }
 }

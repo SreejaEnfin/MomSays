@@ -10,6 +10,7 @@ import { QuestionModule } from './question/question.module';
 import { TestSetModule } from './test-set/test-set.module';
 import { TestResponseModule } from './test-response/test-response.module';
 import { SubmitAnswerModule } from './submit-answer/submit-answer.module';
+import { VoiceUploaderModule } from './voice-uploader/voice-uploader.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { SubmitAnswerModule } from './submit-answer/submit-answer.module';
     TestSetModule,
     TestResponseModule,
     SubmitAnswerModule,
+    VoiceUploaderModule,
   ],
 })
 

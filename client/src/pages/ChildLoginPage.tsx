@@ -18,7 +18,7 @@ function ChildLoginPage() {
                 navigate('/child-dashboard');
             }
         } catch (error) {
-            console.error('❌ Login failed', error);
+            throw error
         }
     };
     return (

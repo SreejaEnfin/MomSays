@@ -25,7 +25,6 @@ export default function ParentRegister() {
                 role: 'parent'
             }
             const response = await handleParentRegistrationAPI(parentData);
-            console.log(response);
             if (response.status === 'success') {
                 setModalMessage('Registration successful. You can now log in.');
                 setModalSuccess(true);

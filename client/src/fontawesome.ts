@@ -10,6 +10,7 @@ import {
     faEdit,
     faTrash,
     faXmark,
+    faChartLine,
 } from '@fortawesome/free-solid-svg-icons';
 
-library.add(faChild, faBookOpen, faMicrophone, faVial, faPlus, faUser, faEdit, faTrash, faXmark);
+library.add(faChild, faBookOpen, faMicrophone, faVial, faPlus, faUser, faEdit, faTrash, faXmark, faChartLine);

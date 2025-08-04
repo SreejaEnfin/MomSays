@@ -15,7 +15,7 @@ export class CreateTestSetDto {
     parentId: string;
 
     @IsUUID()
-    childId: string;
+    childId?: string;
 
     @IsArray()
     @IsUUID('all', { each: true })
@@ -23,4 +23,13 @@ export class CreateTestSetDto {
 
     @IsDateString()
     assignedDate: string;
+
+    @IsArray()
+    @IsUUID('all', { each: true })
+    category: string[];
+
+    @IsString()
+    ageGroup: string;
+
+    status?: 'draft' | 'launched';
 }

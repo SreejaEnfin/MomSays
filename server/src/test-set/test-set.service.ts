@@ -24,7 +24,6 @@ export class TestSetService {
     try {
       const parent = await this.userRepo.findOne({ where: { id: createTestSetDto.parentId } });
       const child = await this.userRepo.findOne({ where: { id: createTestSetDto.childId } });
-
       if (!parent) {
         throw new NotFoundException('Parent not found');
       }
@@ -47,6 +46,9 @@ export class TestSetService {
         child,
         questions,
         assignedDate: new Date(createTestSetDto.assignedDate),
+        ageGroup: createTestSetDto.ageGroup,
+        category: createTestSetDto.category,
+        status: createTestSetDto.status ?? 'draft',
       });
 
       const response = await this.testSetRepo.save(testSet);
@@ -157,50 +159,55 @@ export class TestSetService {
   async getTestSetsByChild(childId: string) {
     try {
       const response = await this.testSetRepo.find({
-        where: {
-          child: {
-            id: childId
-          },
-        }, relations: ['question', 'parent', 'child'], order: { assignedDate: 'DESC' }
+        where: { child: { id: childId } },
+        relations: ['questions', 'parent', 'child'],
+        order: { assignedDate: 'DESC' }
       });
-      if (response) {
+
+      if (!response || response.length === 0) {
         return {
-          success: true,
-          data: response
-        }
-      } else {
-        throw new BadRequestException("Error in fetching test sets");
+          success: false,
+          message: 'No test sets found'
+        };
       }
+
+      return {
+        success: true,
+        data: response
+      };
     } catch (e) {
       return {
         success: false,
         message: e.message
-      }
+      };
     }
   }
 
   async getTestSetsByParent(parentId: string) {
     try {
       const response = await this.testSetRepo.find({
-        where: {
-          parent: {
-            id: parentId
-          },
-        }, relations: ['question', 'parent', 'child'], order: { assignedDate: 'DESC' }
+        where: { parent: { id: parentId } },
+        relations: ['questions', 'parent', 'child'],
+        order: { assignedDate: 'DESC' }
       });
-      if (response) {
+
+      if (!response || response.length === 0) {
         return {
-          success: true,
-          data: response
-        }
-      } else {
-        throw new BadRequestException("Error in fetching test sets");
+          success: false,
+          message: 'No test sets found'
+        };
       }
+
+      return {
+        success: true,
+        data: response
+      };
     } catch (e) {
       return {
         success: false,
         message: e.message
-      }
+      };
     }
   }
+
 }

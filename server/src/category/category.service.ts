@@ -4,6 +4,8 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './entities/category.entity';
 import { LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
+import { ageGroups } from 'src/utils/constants/ageGroups';
+import { maxDate } from 'class-validator';
 
 @Injectable()
 export class CategoryService {
@@ -33,7 +35,6 @@ export class CategoryService {
   async findAll() {
     try {
       const response = await this.categoryRepo.find();
-      console.log(response);
       return {
         success: true,
         data: response
@@ -123,25 +124,24 @@ export class CategoryService {
         message: e.message
       }
     }
-    return `This action removes a #${id} category`;
   }
 
-  async findByAgeRange(minAge: number, maxAge: number) {
+  async findByAgeRange() {
     try {
-      const response = await this.categoryRepo.find({
-        where: {
-          minAge: LessThanOrEqual(maxAge),
-          maxAge: MoreThanOrEqual(minAge),
-        },
-        order: {
-          displayOrder: 'ASC',
-        },
-      });
-      if (response) {
-        return {
-          success: true,
-          data: response
-        }
+      const categories = await this.categoryRepo.find();
+      let groupCategories: Record<string, { id: string, name: string }[]> = {}
+      ageGroups.forEach((ageGroup) => {
+        const [minAge, maxAge] = ageGroup.split('-').map(Number);
+        const ageCategories = categories.filter((category) => category.minAge === minAge && category.maxAge === maxAge).map((category) => ({
+          id: category.id,
+          name: category.categoryName,
+        }));
+
+        groupCategories[ageGroup] = ageCategories;
+      })
+      return {
+        success: true,
+        data: groupCategories
       }
     } catch (e) {
       return {
@@ -150,4 +150,6 @@ export class CategoryService {
       }
     }
   }
+
+
 }

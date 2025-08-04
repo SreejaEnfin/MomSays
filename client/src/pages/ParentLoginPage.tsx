@@ -1,21 +1,22 @@
 import { useNavigate } from 'react-router-dom';
 import ParentLoginForm from '../components/forms/ParentLoginForm';
 import { ParentLoginAPI } from '../apis/user/ParentLoginAPI';
-
-type LoginFormInputs = {
-    email: string;
-    password: string;
-};
+import { useParent } from '../contexts/ParentContext';
+import type { ParentLoginType } from '../types/ParentLoginType';
 
 function ParentLoginPage() {
     const navigate = useNavigate();
+    const { setParent } = useParent();
 
-    const handleParentLogin = async (data: LoginFormInputs) => {
-        const response = await ParentLoginAPI(data);
-        if (response.status === 'success') {
-            navigate('/parent-dashboard');
-        } else {
-            console.error('Login failed:', response.message);
+    const handleParentLogin = async (data: ParentLoginType) => {
+        try {
+            const response = await ParentLoginAPI(data);
+            if (response?.result?.status === 'success') {
+                setParent(response?.data)
+                navigate('/parent-dashboard');
+            }
+        } catch (error) {
+            throw error;
         }
     };
 

@@ -72,7 +72,6 @@ export class AuthService {
                 }
             }
 
-            console.log(child, "childddd")
             const token = this.authJwtService.signToken({ id: child.id, name: child.name, role: child.role, alias: child.alias, parentId: child.parentId, avatar: child.avatar, language: child.language }, '2h');
 
             return {

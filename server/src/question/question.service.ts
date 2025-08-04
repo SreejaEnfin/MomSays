@@ -3,7 +3,7 @@ import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Question } from './entities/question.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 @Injectable()
 export class QuestionService {
@@ -132,4 +132,32 @@ export class QuestionService {
       }
     }
   }
+
+  async getQuestionsByCategory(categoryIds: string[]) {
+    try {
+      const result = await Promise.all(
+        categoryIds.map(async (categoryId) => {
+          const _questions = await this.questionRepo.find({ where: { categoryId } });
+          return { categoryId, questions: _questions };
+        })
+      );
+
+      const Questions: Record<string, any[]> = {};
+      result.forEach(({ categoryId, questions }) => {
+        Questions[categoryId] = questions;
+      });
+
+      return {
+        success: true,
+        data: Questions,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: e.message,
+      };
+    }
+  }
+
+
 }

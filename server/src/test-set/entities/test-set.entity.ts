@@ -23,7 +23,7 @@ export class TestSet {
     @ManyToOne(() => User)
     parent: User;
 
-    @ManyToOne(() => User)
+    @ManyToOne(() => User, { nullable: true })
     child: User;
 
     @ManyToMany(() => Question)
@@ -36,4 +36,12 @@ export class TestSet {
     @OneToMany(() => TestResponse, (response) => response.testSet)
     responses: TestResponse[];
 
+    @Column()
+    ageGroup: string;
+
+    @Column("uuid", { array: true })
+    category: string[];
+
+    @Column({ default: 'draft' })
+    status: 'draft' | 'launched'
 }

@@ -17,7 +17,7 @@ interface AddChildFormProps {
     isSubmitting?: boolean;
     showStatusModal?: boolean
     setShowStatusModal?: (val: boolean) => void;
-    setActiveMenu?: (menu: string) => void;
+    setActiveMenu?: (menu: 'list' | 'add-child') => void;
     refetchChildren: () => void;
     modalStatus?: boolean;
     modalMessage?: string;
@@ -39,7 +39,7 @@ export default function AddChildForm({ onSubmit, isSubmitting, showStatusModal, 
             <form onSubmit={handleSubmit(onSubmit)} className="relative max-w-md mx-auto bg-white p-6 rounded-xl shadow-md">
                 <button
                     type="button"
-                    onClick={() => setActiveMenu?.('child')}
+                    onClick={() => setActiveMenu?.('list')}
                     className="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-xl font-bold focus:outline-none"
                     title="Close"
                 >
@@ -63,6 +63,7 @@ export default function AddChildForm({ onSubmit, isSubmitting, showStatusModal, 
                     <input
                         type="number"
                         {...register('age', {
+                            valueAsNumber: true,
                             required: 'Age is required',
                             min: { value: 1, message: 'Age must be at least 1' },
                             max: { value: 12, message: 'Age must be 12 or less' },
@@ -119,7 +120,7 @@ export default function AddChildForm({ onSubmit, isSubmitting, showStatusModal, 
             </form>
             {showStatusModal && <StatusModal show={showStatusModal} success={modalStatus ?? false} message={modalMessage ?? 'Some error Occured'} buttonLabel={'Close'} onAction={() => {
                 setShowStatusModal?.(false);
-                setActiveMenu?.('child');
+                setActiveMenu?.('list');
                 refetchChildren();
             }
             } />}

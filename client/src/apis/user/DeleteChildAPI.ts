@@ -10,7 +10,6 @@ export const DeleteChildAPI = async (child: Child) => {
                 'Authorization': `Bearer ${getToken()}`
             },
         });
-        console.log(response);
         if (response.ok) {
             const result = await response.json();
             return result;
@@ -19,7 +18,6 @@ export const DeleteChildAPI = async (child: Child) => {
             throw new Error(error.message || 'Child delete request failed');
         }
     } catch (e) {
-        console.error("Delete Child API error", e);
         throw e;
     }
 }

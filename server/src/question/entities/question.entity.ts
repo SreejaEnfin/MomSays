@@ -8,6 +8,7 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     OneToMany,
+    JoinColumn,
 } from 'typeorm';
 
 @Entity()
@@ -25,6 +26,7 @@ export class Question {
     correctAnswer: number;
 
     @ManyToOne(() => Category, (category) => category.questions, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'categoryId' })
     category: Category;
 
     @Column()

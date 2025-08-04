@@ -15,7 +15,6 @@ export default function PasswordReset() {
         try {
             const response = await PasswordRestAPI({ token: token || '', password: newPassword });
             if (response.status !== 'success') {
-                console.error('Password reset failed:', response.message);
                 setModalMessage(response.message || 'Failed to reset password.');
                 setModalSuccess(false);
                 setShowModal(true);
@@ -26,7 +25,6 @@ export default function PasswordReset() {
                 setModalSuccess(true);
             }
         } catch (e) {
-            console.error('Error during password reset:', e);
             setModalMessage('An unexpected error occurred. Please try again.');
             setModalSuccess(false);
             setShowModal(true);

@@ -1,18 +1,6 @@
 import { jwtDecode } from "jwt-decode";
-
-type ChildLoginForm = {
-    alias: string;
-};
-
-type DecodedTokenType = {
-    id: string;
-    name: string;
-    role: string;
-    iat: number;
-    exp: number;
-    parentId: string;
-    alias: string;
-}
+import type { DecodedTokenType } from "../../types/DecodedToken";
+import type { ChildLoginForm } from "../../types/ChildLoginType";
 
 export const ChildLoginAPI = async (data: ChildLoginForm) => {
     try {
@@ -35,7 +23,6 @@ export const ChildLoginAPI = async (data: ChildLoginForm) => {
             throw new Error(error.message || 'Child login failed');
         }
     } catch (e) {
-        console.error('❌ Child login API error:', e);
         throw e;
     }
 

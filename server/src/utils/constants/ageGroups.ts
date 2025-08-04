@@ -1,0 +1,1 @@
+export const ageGroups = ['3-5', '6-8', '9-10'];

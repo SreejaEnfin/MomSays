@@ -1,7 +1,4 @@
-type PasswordReset = {
-    token: string;
-    password: string;
-};
+import type { PasswordReset } from "../../types/PasswordReset";
 
 export const PasswordRestAPI = async (data: PasswordReset) => {
     try {
@@ -18,7 +15,6 @@ export const PasswordRestAPI = async (data: PasswordReset) => {
             throw new Error(error.message || 'Password reset failed');
         }
     } catch (e) {
-        console.error("Error in PasswordRestAPI:", e);
         throw e;
     }
 }

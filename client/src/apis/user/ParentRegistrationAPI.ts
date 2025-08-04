@@ -1,12 +1,6 @@
-type RegisterFormInputs = {
-    name: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-    phone: string;
-    role: string;
-};
-export const handleParentRegistrationAPI = async (data: RegisterFormInputs) => {
+import type { ParentRegisterType } from "../../types/ParentRegisterType";
+
+export const handleParentRegistrationAPI = async (data: ParentRegisterType) => {
     const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/user/parent`, {
         method: 'POST',
         headers: {
