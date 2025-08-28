@@ -1,0 +1,60 @@
+.child-dashboard-bg {
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.child-dashboard-overlay {
+    text-align: center;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.4);
+    /* slight overlay for readability */
+    padding: 2rem;
+    border-radius: 20px;
+    max-width: 90%;
+}
+
+.child-greeting {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.child-message {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.start-test-btn {
+    padding: 0.8rem 1.5rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    background-color: #ffcc00;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .child-greeting {
+        font-size: 1.5rem;
+    }
+
+    .start-test-btn {
+        font-size: 1rem;
+    }
+}
+
+.monkey-animation {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    width: 100px;
+    height: 100px;
+    /* placeholder for monkey pointer animation */
+}

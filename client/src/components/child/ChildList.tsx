@@ -9,6 +9,7 @@ type ChildListProps = {
 };
 
 export default function ChildList({ childrenData, onEdit, onDelete, languageMap }: ChildListProps) {
+    console.log(childrenData, 'childrenData in ChildList');
     if (!childrenData || childrenData.length === 0) {
         return (
             <div className="text-center text-gray-600">

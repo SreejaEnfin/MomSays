@@ -1,4 +1,4 @@
-import { getToken } from "../../utils/getToken";
+import { getParentToken } from "../../utils/getToken";
 
 export const GetQuestionsBasedonCategoryId = async (categoryIds: string[]) => {
     try {
@@ -6,7 +6,7 @@ export const GetQuestionsBasedonCategoryId = async (categoryIds: string[]) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${getToken()}`,
+                'Authorization': `Bearer ${getParentToken()}`,
             },
             body: JSON.stringify({ categoryIds }),
         });

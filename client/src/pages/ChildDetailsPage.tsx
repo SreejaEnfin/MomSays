@@ -1,10 +1,10 @@
 import AddChildForm from "../components/forms/AddChildForm";
 import EditChildModal from "../components/modals/EditChildModal";
-import ConfirmDeleteModal from "../components/modals/ConfirmDeleteModal";
+import ConfirmDeleteModal from "../components/modals/ConfirmModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ChildList from "../components/child/ChildList";
 import StatusModal from "../components/common/StatusModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { UpdateChildDetailsAPI } from "../apis/user/UpdateChildDetailsAPI";
 import { DeleteChildAPI } from "../apis/user/DeleteChildAPI";
@@ -37,6 +37,11 @@ export default function ChildDetailsPage() {
         retry: false,
     });
 
+    useEffect(() => {
+        if (children) {
+            console.log(children, "children")
+        }
+    })
     const ChildAddmutation = useMutation({
         mutationFn: ChildRegistrationAPI,
         onSuccess: () => {
@@ -181,7 +186,7 @@ export default function ChildDetailsPage() {
                 onClose={() => setAfterDeleteModal(false)}
             />
 
-            <ConfirmDeleteModal
+            <ConfirmDeleteModal title={"Confirm Delete"}
                 show={showDeleteModal}
                 onCancel={handleCancelDelete}
                 onConfirm={handleConfirmDelete}

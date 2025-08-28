@@ -6,13 +6,15 @@ import { Repository } from "typeorm";
 import * as bcrypt from 'bcrypt';
 import { ChildLoginDto } from "./dto/child-login.dto";
 import { AuthJwtService } from "./jwt.service";
+import { WhatsAppService } from "src/whats-app/whats-app.service";
+import { response } from "express";
 
 @Injectable()
 export class AuthService {
     constructor(
         @InjectRepository(User)
         private userRepo: Repository<User>,
-        private readonly authJwtService: AuthJwtService) { }
+        private readonly authJwtService: AuthJwtService, private readonly whatsAppService: WhatsAppService) { }
 
     async parentLogin(loginDto: ParentLoginDto) {
         try {
@@ -23,7 +25,13 @@ export class AuthService {
                     message: 'Email and password are required for login',
                 }
             }
-            const user = await this.userRepo.findOne({ where: { email } });
+            const user = await this.userRepo.findOne({
+                where: {
+                    email
+
+
+                }
+            });
             if (!user) {
                 return {
                     status: 'error',
@@ -38,7 +46,7 @@ export class AuthService {
                 }
             }
 
-            const token = await this.authJwtService.signToken({ id: user.id, role: user.role, email: user.email, name: user.name });
+            const token = await this.authJwtService.signToken({ id: user.id, role: user.role, email: user.email, name: user.name, hasSeenWelcomeMessage: user.hasSeenWelcomeMessage });
             return {
                 status: 'success',
                 message: 'Login successful',
@@ -72,19 +80,34 @@ export class AuthService {
                 }
             }
 
-            const token = this.authJwtService.signToken({ id: child.id, name: child.name, role: child.role, alias: child.alias, parentId: child.parentId, avatar: child.avatar, language: child.language }, '2h');
+            const token = await this.authJwtService.signToken({ id: child.id, name: child.name, role: child.role, alias: child.alias, parentId: child.parentId, avatar: child.avatar, language: child.language, age: child.age }, '2h');
+
+            // const parent = child.parentId ? await this.userRepo.findOne({ where: { id: child.parentId } }) : null;
+            // let responseFromWhatsApp;
+            // if (parent !== null && parent?.phone) {
+            //     const loginTime = new Date().toLocaleString();
+            //     console.log("trying to send WhatsApp message");
+            //     responseFromWhatsApp = await this.whatsAppService.sendWhatsAppMessage(parent.name, child.name, loginTime);
+            //     if (responseFromWhatsApp.messages && responseFromWhatsApp
+
+            //     )
+            //         console.log(responseFromWhatsApp, "-----------------responseFromWhatsApp");
+            // }
 
             return {
                 status: 'success',
                 message: 'Login successful',
                 data: token,
-            }
-
+                // whatsAppStatus:
+                //     responseFromWhatsApp?.messages?.message_status === 'accepted'
+                //         ? 'WhatsApp message sent'
+                //         : 'WhatsApp message not sent or failed',
+            };
         } catch (e) {
             return {
                 status: 'error',
                 message: e.message || 'Failed to login',
-            }
+            };
         }
     }
 }

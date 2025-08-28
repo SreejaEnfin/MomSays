@@ -71,12 +71,19 @@ function ParentLoginForm({ onSubmit }: ParentLoginFormProps) {
                 {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
             </div>
 
-            <div className="text-right">
-                <Link to="/forgot-password" className="text-sm text-green-700 hover:underline">
-                    Forgot Password?
-                </Link>
-            </div>
+            <div className="flex justify-between items-center">
+                <div>
+                    <Link to="/" className="text-sm text-green-700 hover:underline">
+                        Back
+                    </Link>
+                </div>
 
+                <div>
+                    <Link to="/forgot-password" className="text-sm text-green-700 hover:underline">
+                        Forgot Password?
+                    </Link>
+                </div>
+            </div>
             <div className="text-center">
                 <Link to="/register" className="text-sm text-gray-600 hover:underline">
                     Don't have an account? Register

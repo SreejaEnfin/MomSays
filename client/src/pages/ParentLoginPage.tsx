@@ -3,14 +3,17 @@ import ParentLoginForm from '../components/forms/ParentLoginForm';
 import { ParentLoginAPI } from '../apis/user/ParentLoginAPI';
 import { useParent } from '../contexts/ParentContext';
 import type { ParentLoginType } from '../types/ParentLoginType';
-
+type Response = {
+    result: any;
+    data: any;
+}
 function ParentLoginPage() {
     const navigate = useNavigate();
     const { setParent } = useParent();
 
     const handleParentLogin = async (data: ParentLoginType) => {
         try {
-            const response = await ParentLoginAPI(data);
+            const response: Response = await ParentLoginAPI(data);
             if (response?.result?.status === 'success') {
                 setParent(response?.data)
                 navigate('/parent-dashboard');

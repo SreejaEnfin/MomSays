@@ -17,6 +17,7 @@ export class VoiceUploaderController {
     { name: 'skip', maxCount: 1 },
     { name: 'encouragement', maxCount: 1 },
   ]))
+
   async uploadVoice(
     @UploadedFiles() files: Record<string, Express.Multer.File[]>,
     @Body('parentId') parentId: string,

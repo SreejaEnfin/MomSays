@@ -1,5 +1,5 @@
 import type { ChildRegisteration } from "../../types/ChildRegistration";
-import { getToken } from "../../utils/getToken";
+import { getParentToken } from "../../utils/getToken";
 
 export const ChildRegistrationAPI = async (data: ChildRegisteration) => {
     try {
@@ -7,7 +7,7 @@ export const ChildRegistrationAPI = async (data: ChildRegisteration) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${getToken()}`
+                'Authorization': `Bearer ${getParentToken()}`
             },
             body: JSON.stringify(data),
         });

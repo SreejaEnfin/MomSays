@@ -4,13 +4,15 @@ import LandingPage from './pages/LandingPage'
 import ChildLoginPage from './pages/ChildLoginPage'
 import ParentLoginPage from './pages/ParentLoginPage'
 import ParentDashboard from './pages/ParentDashboardPage'
-import ChildDashboard from './pages/ChildDashboard'
 import PasswordReset from './pages/PasswordResetPage'
 import ForgotPassword from './pages/ForgotPasswordPage'
 import ParentRegister from './pages/ParentRegisterPage'
 import UploadVoiceFeedbackPage from './pages/UploadVoiceFeedbackPage'
 import ChildDetailsPage from './pages/ChildDetailsPage'
 import CreateLaunchTestPage from './pages/CreateLaunchTestPage'
+import QuestionBankPage from './pages/QuestionBankPage'
+import ChildAttendTestPage from './pages/ChildAttendTestPage'
+import ChildDashboardLayout from './components/childDashboard/ChildDashboardLayout'
 
 function App() {
   return (
@@ -20,10 +22,12 @@ function App() {
       <Route path="/child-login" element={<ChildLoginPage />} />
       <Route path="/parent-dashboard" element={<ParentDashboard />}>
         <Route path='voice-uploader' element={<UploadVoiceFeedbackPage />} />
+        <Route path='question-bank' element={<QuestionBankPage />}></Route>
         <Route path='child-details' element={<ChildDetailsPage />} />
         <Route path='create-launch-test' element={<CreateLaunchTestPage />} />
       </Route>
-      <Route path="/child-dashboard" element={<ChildDashboard />} />
+      <Route path="/child-dashboard" element={<ChildDashboardLayout />} />
+      <Route path='/attend-test/:testId' element={<ChildAttendTestPage />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path='/reset-password/:token' element={<PasswordReset />} />
       <Route path='/register' element={<ParentRegister />} />

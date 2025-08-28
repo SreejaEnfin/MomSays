@@ -11,6 +11,7 @@ import { TestSetModule } from './test-set/test-set.module';
 import { TestResponseModule } from './test-response/test-response.module';
 import { SubmitAnswerModule } from './submit-answer/submit-answer.module';
 import { VoiceUploaderModule } from './voice-uploader/voice-uploader.module';
+import { WhatsAppModule } from './whats-app/whats-app.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { VoiceUploaderModule } from './voice-uploader/voice-uploader.module';
     TestResponseModule,
     SubmitAnswerModule,
     VoiceUploaderModule,
+    WhatsAppModule,
   ],
 })
 

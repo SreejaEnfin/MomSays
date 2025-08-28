@@ -10,5 +10,6 @@ import { VoiceUploader } from './entities/voice-uploader.entity';
   imports: [TypeOrmModule.forFeature([VoiceUploader]), AwsModule],
   controllers: [VoiceUploaderController],
   providers: [VoiceUploaderService, AwsS3Service],
+  exports: [VoiceUploaderService],
 })
 export class VoiceUploaderModule { }

@@ -42,6 +42,6 @@ export class TestSet {
     @Column("uuid", { array: true })
     category: string[];
 
-    @Column({ default: 'draft' })
-    status: 'draft' | 'launched'
+    @Column({ default: 'active' })
+    status: 'active' | 'inactive'
 }

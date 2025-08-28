@@ -50,6 +50,7 @@ export default function CreateLaunchTestPage() {
     const fetchChildren = async () => {
         if (parent) {
             const response = await GetChildDetailsByParentId(parent.id);
+            console.log(response, "response from GetChildDetailsByParentId");
             if (response.status === 'success') {
                 setTimeout(() => {
                     setValue("selectedChildId", response.data[0].id);
@@ -61,9 +62,15 @@ export default function CreateLaunchTestPage() {
 
     const getAgeGroupCatgories = async () => {
         try {
-            const response = await GetCategoriesByAgeGroupAPI();
-            if (response.success) {
-                setAgeGroupCategories(response.data);
+            const ageGroupCategories = await localStorage.getItem('ageGroupCategories');
+            if (!ageGroupCategories) {
+                const response = await GetCategoriesByAgeGroupAPI();
+                if (response.success) {
+                    await localStorage.setItem('ageGroupCategories', JSON.stringify(response.data));
+                    setAgeGroupCategories(response.data);
+                }
+            } else {
+                setAgeGroupCategories(JSON.parse(ageGroupCategories));
             }
         } catch (e) {
             throw e;
@@ -97,7 +104,7 @@ export default function CreateLaunchTestPage() {
             selectedCategoryIds.includes(cat.id)
         );
 
-        setSelectedCategoryObjects(fullCategoryObjects); // ✅ This gives you name + id for buttons
+        setSelectedCategoryObjects(fullCategoryObjects);
 
         const response = await GetQuestionsBasedonCategoryId(selectedCategoryIds);
 
@@ -325,6 +332,7 @@ export default function CreateLaunchTestPage() {
             {(categoryWiseQuestions && categoryWiseQuestions?.length > 0) &&
                 <>
                     <QuestionCarousel
+                        showSelection={true}
                         step={step}
                         questions={categoryWiseQuestions}
                         selectedQuestionIds={selectedQuestionIds}

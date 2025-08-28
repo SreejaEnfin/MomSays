@@ -1,0 +1,20 @@
+/* Only essential styles for the dashboard */
+.dashboard-wrapper {
+    background: linear-gradient(135deg, #2d5f3f 0%, #1a3d2e 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.white-container {
+    background: white;
+    width: 90%;
+    max-width: 800px;
+    min-height: 500px;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}

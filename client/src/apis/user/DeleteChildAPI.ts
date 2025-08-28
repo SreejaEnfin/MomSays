@@ -1,5 +1,5 @@
 import type { Child } from "../../types/Child";
-import { getToken } from "../../utils/getToken";
+import { getParentToken } from "../../utils/getToken";
 
 export const DeleteChildAPI = async (child: Child) => {
     try {
@@ -7,7 +7,7 @@ export const DeleteChildAPI = async (child: Child) => {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${getToken()}`
+                'Authorization': `Bearer ${getParentToken()}`
             },
         });
         if (response.ok) {

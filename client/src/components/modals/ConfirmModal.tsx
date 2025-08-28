@@ -1,6 +1,7 @@
 import React from 'react';
 
 interface ConfirmDeleteModalProps {
+    title: string;
     show: boolean;
     message?: string;
     onCancel: () => void;
@@ -12,6 +13,7 @@ const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
     message = 'Are you sure you want to delete this child’s details?',
     onCancel,
     onConfirm,
+    title
 }) => {
     if (!show) return null;
 
@@ -29,7 +31,7 @@ const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </div>
-                <h3 className="text-xl font-semibold text-red-700 mb-2">Confirm Deletion</h3>
+                <h3 className="text-xl font-semibold text-red-700 mb-2">{title}</h3>
                 <p className="text-gray-600 mb-6">{message}</p>
                 <div className="flex justify-center gap-4">
                     <button
@@ -42,7 +44,7 @@ const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
                         onClick={onConfirm}
                         className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
                     >
-                        Yes, Delete
+                        Yes
                     </button>
                 </div>
             </div>

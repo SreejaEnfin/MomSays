@@ -1,4 +1,4 @@
-import { getToken } from "../../utils/getToken";
+import { getParentToken } from "../../utils/getToken";
 
 export const DeleteVoiceFeedbackAPI = async (data: any) => {
     try {
@@ -6,7 +6,7 @@ export const DeleteVoiceFeedbackAPI = async (data: any) => {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${getToken()}`
+                'Authorization': `Bearer ${getParentToken()}`
             },
             body: JSON.stringify({
                 parentId: data?.parentId,

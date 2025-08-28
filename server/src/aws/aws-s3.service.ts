@@ -14,9 +14,6 @@ export class AwsS3Service {
 
     constructor(
         private configService: ConfigService,
-
-        @InjectRepository(VoiceUploader)
-        private voiceClipRepository: Repository<VoiceUploader>
     ) {
         this.bucket = this.configService.get<string>('AWS_BUCKET_NAME') || '';
 

@@ -1,4 +1,4 @@
-import { getToken } from "../../utils/getToken";
+import { getParentToken } from "../../utils/getToken";
 
 export const GetChildDetailsByParentId = async (parentId: string) => {
     try {
@@ -6,11 +6,12 @@ export const GetChildDetailsByParentId = async (parentId: string) => {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${getToken()}`
+                'Authorization': `Bearer ${getParentToken()}`
             },
         });
         if (response.ok) {
             const result = await response.json();
+            console.log(result, "result from GetChildDetailsByParentId");
             return result.data;
         } else {
             const error = await response.json();

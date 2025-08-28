@@ -6,4 +6,6 @@ export type DecodedTokenType = {
     exp: number;
     parentId: string;
     alias: string;
+    testAvailable?: boolean;
+    testId?: string;
 }

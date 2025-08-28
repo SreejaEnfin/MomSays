@@ -15,14 +15,9 @@ export class TestSetController {
     return this.testSetService.create(createTestSetDto);
   }
 
-  @Get()
-  findAll() {
-    return this.testSetService.findAll();
-  }
-
   @Get('by-child')
-  getTestSetByChild(@Query('childId') childId: UUID) {
-    return this.testSetService.getTestSetsByChild(childId);
+  getTestSetByChild(@Query('testId') testId: string, @Req() req: any) {
+    return this.testSetService.getTestSetsByChild(testId);
   }
 
   @Get('by-parent')
@@ -30,9 +25,19 @@ export class TestSetController {
     return this.testSetService.getTestSetsByParent(parentId);
   }
 
+  @Get('today/:childId')
+  getTodayTestSetForChild(@Param('childId') childId: UUID) {
+    return this.testSetService.getTodayTestSetForChild(childId);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.testSetService.findOne(id);
+  }
+
+  @Get()
+  findAll() {
+    return this.testSetService.findAll();
   }
 
   @Patch(':id')

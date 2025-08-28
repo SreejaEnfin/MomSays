@@ -11,6 +11,11 @@ import {
     faTrash,
     faXmark,
     faChartLine,
+    faGear,
+    faPenToSquare,
+    faRightFromBracket,
+    faUserCircle
 } from '@fortawesome/free-solid-svg-icons';
 
-library.add(faChild, faBookOpen, faMicrophone, faVial, faPlus, faUser, faEdit, faTrash, faXmark, faChartLine);
+library.add(faChild, faBookOpen, faMicrophone, faVial, faPlus, faUser, faEdit, faTrash, faXmark, faChartLine, faGear,
+    faRightFromBracket, faPenToSquare, faUserCircle);

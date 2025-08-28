@@ -3,10 +3,13 @@ import { CreateTestSetDto } from './dto/create-test-set.dto';
 import { UpdateTestSetDto } from './dto/update-test-set.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TestSet } from './entities/test-set.entity';
-import { In, Repository } from 'typeorm';
+import { In, Raw, Repository } from 'typeorm';
 import { User } from 'src/user/entities/user.entity';
 import { Question } from 'src/question/entities/question.entity';
 import { UserRole } from 'src/utils/enums/role.enum';
+import { format } from 'date-fns';
+import { VoiceUploader } from 'src/voice-uploader/entities/voice-uploader.entity';
+import { VoiceUploaderService } from 'src/voice-uploader/voice-uploader.service';
 
 @Injectable()
 export class TestSetService {
@@ -17,7 +20,8 @@ export class TestSetService {
     @InjectRepository(User)
     private userRepo: Repository<User>,
     @InjectRepository(Question)
-    private questRepo: Repository<Question>
+    private questRepo: Repository<Question>,
+    private voiceUploaderService: VoiceUploaderService
   ) { }
 
   async create(createTestSetDto: CreateTestSetDto) {
@@ -48,7 +52,7 @@ export class TestSetService {
         assignedDate: new Date(createTestSetDto.assignedDate),
         ageGroup: createTestSetDto.ageGroup,
         category: createTestSetDto.category,
-        status: createTestSetDto.status ?? 'draft',
+        status: createTestSetDto.status ?? 'active',
       });
 
       const response = await this.testSetRepo.save(testSet);
@@ -156,12 +160,12 @@ export class TestSetService {
     }
   }
 
-  async getTestSetsByChild(childId: string) {
+  async getTestSetsByChild(testId: string) {
     try {
       const response = await this.testSetRepo.find({
-        where: { child: { id: childId } },
+        where: { id: testId, status: 'active' },
         relations: ['questions', 'parent', 'child'],
-        order: { assignedDate: 'DESC' }
+
       });
 
       if (!response || response.length === 0) {
@@ -170,10 +174,16 @@ export class TestSetService {
           message: 'No test sets found'
         };
       }
+      const parent = response[0].parent;
+
+      const voiceClips = await this.voiceUploaderService.getVoiceFeedbackVoices(parent?.id);
 
       return {
         success: true,
-        data: response
+        data: {
+          testSet: response[0],
+          voiceClips: voiceClips.data || [],
+        }
       };
     } catch (e) {
       return {
@@ -187,7 +197,7 @@ export class TestSetService {
     try {
       const response = await this.testSetRepo.find({
         where: { parent: { id: parentId } },
-        relations: ['questions', 'parent', 'child'],
+        relations: ['question', 'parent', 'child'],
         order: { assignedDate: 'DESC' }
       });
 
@@ -210,4 +220,37 @@ export class TestSetService {
     }
   }
 
+  async getTodayTestSetForChild(childId: string) {
+    try {
+      const today = format(new Date(), 'yyyy-MM-dd');
+
+      console.log(childId, today, "----------------child id and today");
+
+      const response = await this.testSetRepo.find({
+        where: {
+          child: { id: childId },
+          assignedDate: Raw(alias => `DATE(${alias}) = :today`, { today })
+        }
+      });
+
+      console.log(response, "----------------response");
+
+      if (!response || response.length === 0) {
+        return {
+          success: true,
+          message: 'No test sets found for today'
+        };
+      }
+
+      return {
+        success: true,
+        data: response
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: e.message
+      };
+    }
+  }
 }

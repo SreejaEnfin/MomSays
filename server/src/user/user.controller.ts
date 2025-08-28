@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ParseUUIDPipe } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -16,6 +16,11 @@ export class UserController {
   @Post('child')
   createChild(@Body() createUserDto: CreateUserDto) {
     return this.userService.createChild(createUserDto);
+  }
+
+  @Post('mark-welcome-message-seen/:id')
+  markWelcomeMessageSeen(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.userService.markWelcomeMessageSeen(id);
   }
 
   @UseGuards(AuthGuard('jwt'))

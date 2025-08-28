@@ -14,6 +14,10 @@ export const ParentLoginAPI = async (data: ParentLoginType) => {
 
         if (response.ok) {
             const result = await response.json();
+            console.log(result, "result from parent login");
+            if (result.status === 'error') {
+                throw new Error(result.message || 'Parent login failed');
+            }
             sessionStorage.setItem('parentToken', result.data);
             const decoded: DecodedTokenType = jwtDecode(result.data);
             localStorage.setItem('parentData', JSON.stringify(decoded));

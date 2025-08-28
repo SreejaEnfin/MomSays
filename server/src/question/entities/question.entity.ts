@@ -43,4 +43,7 @@ export class Question {
 
     @OneToMany(() => TestResponse, (response) => response.question)
     responses: TestResponse[];
+
+    @Column({ nullable: true })
+    audioUrl: string;
 }

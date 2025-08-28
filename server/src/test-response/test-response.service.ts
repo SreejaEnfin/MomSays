@@ -20,72 +20,72 @@ export class TestResponseService {
     private questionRepo: Repository<Question>
   ) { }
 
-  async submitAnswer(response: SubmitAnswerDto) {
-    try {
-      const child = await this.userRepo.findOneBy({ id: response.childId });
-      const testSet = await this.testSetRepo.findOneBy({ id: response.testSetId });
-      const question = await this.questionRepo.findOneBy({ id: response.questionId });
-      if (!child) {
-        throw new NotFoundException("Child details not found");
-      }
+  // async submitAnswer(response: SubmitAnswerDto) {
+  //   try {
+  //     const child = await this.userRepo.findOneBy({ id: response.childId });
+  //     const testSet = await this.testSetRepo.findOneBy({ id: response.testSetId });
+  //     const question = await this.questionRepo.findOneBy({ id: response.questionId });
+  //     if (!child) {
+  //       throw new NotFoundException("Child details not found");
+  //     }
 
-      if (!testSet) {
-        throw new NotFoundException("Test Set details not found");
-      }
+  //     if (!testSet) {
+  //       throw new NotFoundException("Test Set details not found");
+  //     }
 
-      if (!question) {
-        throw new NotFoundException("Question details not found");
-      }
+  //     if (!question) {
+  //       throw new NotFoundException("Question details not found");
+  //     }
 
-      const isCorrect = response.selectedAnswer === question.correctAnswer;
+  //     const isCorrect = response.selectedAnswer === question.correctAnswer;
 
-      const newTestResponse = this.testResponseRepo.create({
-        child: child,
-        testSet: testSet,
-        question: question,
-        selectedAnswer: response.selectedAnswer,
-        isCorrect: isCorrect
-      });
+  //     const newTestResponse = this.testResponseRepo.create({
+  //       child: child,
+  //       testSet: testSet,
+  //       question: question,
+  //       selectedAnswer: response.selectedAnswer,
+  //       isCorrect: isCorrect
+  //     });
 
-      const savedData = await this.testResponseRepo.save(newTestResponse);
-      if (savedData) {
-        return {
-          success: true,
-          data: savedData
-        }
-      }
-    } catch (e) {
-      return {
-        success: false,
-        message: e.message
-      }
-    }
-  }
+  //     const savedData = await this.testResponseRepo.save(newTestResponse);
+  //     if (savedData) {
+  //       return {
+  //         success: true,
+  //         data: savedData
+  //       }
+  //     }
+  //   } catch (e) {
+  //     return {
+  //       success: false,
+  //       message: e.message
+  //     }
+  //   }
+  // }
 
-  async getResponsesByChild(childId: string) {
-    try {
-      const responses = await this.testResponseRepo.find({
-        where: {
-          child: {
-            id: childId
-          }
-        },
-        relations: ['question', 'testSet', 'child'],
-        order: {
-          attemptedAt: 'DESC'
-        }
-      });
-      if (responses) {
-        return {
-          success: true,
-          data: responses
-        }
-      }
-    } catch (e) {
-      return {
-        success: false,
-        message: e.message
-      }
-    }
-  }
+  // async getResponsesByChild(childId: string) {
+  //   try {
+  //     const responses = await this.testResponseRepo.find({
+  //       where: {
+  //         child: {
+  //           id: childId
+  //         }
+  //       },
+  //       relations: ['question', 'testSet', 'child'],
+  //       order: {
+  //         attemptedAt: 'DESC'
+  //       }
+  //     });
+  //     if (responses) {
+  //       return {
+  //         success: true,
+  //         data: responses
+  //       }
+  //     }
+  //   } catch (e) {
+  //     return {
+  //       success: false,
+  //       message: e.message
+  //     }
+  //   }
+  // }
 }

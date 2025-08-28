@@ -1,4 +1,4 @@
-import { getToken } from "../../utils/getToken";
+import { getParentToken } from "../../utils/getToken";
 
 export const UploadVoiceFeedbackAPI = async (formData: any, scenarioCode: string) => {
     try {
@@ -6,7 +6,7 @@ export const UploadVoiceFeedbackAPI = async (formData: any, scenarioCode: string
             method: 'PATCH',
             body: formData,
             headers: {
-                'Authorization': `Bearer ${getToken()}`
+                'Authorization': `Bearer ${getParentToken()}`
             }
         });
 

@@ -1,4 +1,4 @@
-import { getToken } from "../../utils/getToken";
+import { getParentToken } from "../../utils/getToken";
 
 export const GetVoiceFeedbackAPI = async (parentId: string) => {
     try {
@@ -6,7 +6,7 @@ export const GetVoiceFeedbackAPI = async (parentId: string) => {
             `${import.meta.env.VITE_BACKEND_URL}/voice-uploader/voices?parentId=${parentId}`, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${getToken()}`,
+                'Authorization': `Bearer ${getParentToken()}`,
             }
         });
         if (!response.ok) {

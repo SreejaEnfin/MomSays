@@ -1,15 +1,18 @@
-import { IsString, IsUUID } from "class-validator";
+import { IsUUID, IsObject, IsDateString } from "class-validator";
 
 export class SubmitAnswerDto {
     @IsUUID()
     childId: string;
 
     @IsUUID()
-    testSetId: string;
+    testId: string;
 
     @IsUUID()
-    questionId: string;
+    parentId: string;
 
-    @IsString()
-    selectedAnswer: number;
+    @IsDateString()
+    attendedDateTime: string;
+
+    @IsObject()
+    questions: Record<string, { selectedAnswer: string; isCorrect: boolean }>;
 }

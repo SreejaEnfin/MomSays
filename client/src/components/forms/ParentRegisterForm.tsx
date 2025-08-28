@@ -1,4 +1,6 @@
 import { Controller, useForm } from 'react-hook-form';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 
 type RegisterFormInputs = {
     name: string;
@@ -118,23 +120,21 @@ function ParentRegisterForm({ onSubmit }: ParentRegisterFormProps) {
                     <Controller
                         name="phone"
                         control={control}
-                        defaultValue=""
-                        rules={{
-                            required: 'Phone number is required',
-                            pattern: {
-                                value: /^[0-9]{10}$/,
-                                message: 'Enter a valid 10-digit number',
-                            },
-                        }}
+                        rules={{ required: 'Phone number is required' }}
                         render={({ field }) => (
-                            <input
-                                {...field}
-                                type="tel"
-                                placeholder="Phone Number"
-                                className={`w-full p-2 border rounded-md focus:outline-none focus:ring-2 ${errors.phone ? 'border-red-400 ring-red-300' : 'focus:ring-green-400'}`}
+                            <PhoneInput
+                                country={'in'} // default country code (India)
+                                value={field.value}
+                                onChange={(value) => field.onChange(`+${value}`)}
+                                inputClass={`w-full p-2 border rounded-md ${errors.phone ? 'border-red-400' : 'border-gray-300'}`}
+                                inputStyle={{ width: '100%' }}
+                                placeholder="Enter phone number"
                             />
                         )}
                     />
+                    {errors.phone && (
+                        <p className="text-red-500 text-sm">{errors.phone.message}</p>
+                    )}
                     {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message}</p>}
                 </div>
 

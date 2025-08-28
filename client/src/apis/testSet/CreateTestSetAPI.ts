@@ -1,4 +1,4 @@
-import { getToken } from "../../utils/getToken";
+import { getParentToken } from "../../utils/getToken";
 
 export const CreateTestSetAPI = async (testSetData: any) => {
     try {
@@ -6,7 +6,7 @@ export const CreateTestSetAPI = async (testSetData: any) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${getToken()}`
+                'Authorization': `Bearer ${getParentToken()}`
             },
             body: JSON.stringify(testSetData),
         });

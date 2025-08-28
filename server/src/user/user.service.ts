@@ -468,4 +468,30 @@ export class UserService {
       };
     }
   }
+
+  async markWelcomeMessageSeen(id: string) {
+    try {
+      const user = await this.userRepo.findOne({ where: { id } });
+      if (!user) {
+        return {
+          status: 'error',
+          message: 'User not found',
+        };
+      }
+      user.hasSeenWelcomeMessage = true;
+      const response = await this.userRepo.save(user);
+      if (!response) {
+        throw new Error('Failed to update user');
+      }
+      return {
+        success: true,
+        message: 'Welcome message marked as seen',
+      };
+    } catch (e) {
+      return {
+        status: 'error',
+        message: e.message || 'Failed to mark welcome message as seen',
+      };
+    }
+  }
 }

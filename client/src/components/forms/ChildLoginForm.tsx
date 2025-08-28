@@ -1,4 +1,5 @@
 import { Controller, useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 
 type ChildLoginFormProps = {
     onSubmit: (data: { alias: string }) => void;
@@ -45,6 +46,11 @@ function ChildLoginForm({ onSubmit }: ChildLoginFormProps) {
             >
                 Log In
             </button>
+            <div className="flex items-center">
+                <Link to="/" className="text-sm text-green-700 hover:underline font-bold">
+                    Back
+                </Link>
+            </div>
         </form>
     )
 }

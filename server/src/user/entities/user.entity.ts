@@ -50,5 +50,9 @@ export class User extends BaseEntity {
 
     @OneToMany(() => TestResponse, (response) => response.child)
     responses: TestResponse[];
+
+    @Column({ default: false })
+    hasSeenWelcomeMessage?: boolean;
+
 }
 

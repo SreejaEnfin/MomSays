@@ -31,5 +31,5 @@ export class CreateTestSetDto {
     @IsString()
     ageGroup: string;
 
-    status?: 'draft' | 'launched';
+    status?: 'active' | 'inactive';
 }

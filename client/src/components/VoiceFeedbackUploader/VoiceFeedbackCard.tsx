@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { DeleteVoiceFeedbackAPI } from '../../apis/voiceFeedback/DeleteVoiceFeedbackAPI';
 import { useParent } from '../../contexts/ParentContext';
 import Tooltip from '../common/Tooltip';
-import ConfirmDeleteModal from '../modals/ConfirmDeleteModal';
+import ConfirmDeleteModal from '../modals/ConfirmModal';
 import StatusModal from '../common/StatusModal';
 
 interface VoiceClip {
@@ -147,7 +147,7 @@ export default function VoiceFeedbackCard({
                     </div>
                 )}
 
-                <ConfirmDeleteModal show={showConfirmDelete} message={"Are you sure you want to delete this voice clip?"} onCancel={() => setShowConfirmDelete(false)} onConfirm={handleDelete} />
+                <ConfirmDeleteModal title={"Confirm Delete"} show={showConfirmDelete} message={"Are you sure you want to delete this voice clip?"} onCancel={() => setShowConfirmDelete(false)} onConfirm={handleDelete} />
 
                 <StatusModal show={showDeleteModal} message={deleteMessage} success={isDeleteSuccess} onAction={() => {
                     setShowDeleteModal(false);

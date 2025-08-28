@@ -7,6 +7,8 @@ import { User } from 'src/user/entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
+import { WhatsAppModule } from 'src/whats-app/whats-app.module';
+import { WhatsAppService } from 'src/whats-app/whats-app.service';
 
 @Module({
     imports: [
@@ -18,7 +20,7 @@ import { JwtStrategy } from './jwt.strategy';
         TypeOrmModule.forFeature([User]),
     ],
     controllers: [AuthController],
-    providers: [AuthJwtService, AuthService, JwtStrategy],
+    providers: [AuthJwtService, AuthService, JwtStrategy, WhatsAppService],
     exports: [AuthJwtService, AuthService]
 })
 export class AuthModule { }

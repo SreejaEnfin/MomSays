@@ -6,13 +6,13 @@ import { SubmitAnswerDto } from 'src/submit-answer/dto/create-submit-answer.dto'
 export class TestResponseController {
   constructor(private readonly testResponseService: TestResponseService) { }
 
-  @Post('submit-answer')
-  create(@Body() createTestResponseDto: SubmitAnswerDto) {
-    return this.testResponseService.submitAnswer(createTestResponseDto);
-  }
+  // @Post('submit-answer')
+  // create(@Body() createTestResponseDto: SubmitAnswerDto) {
+  //   return this.testResponseService.submitAnswer(createTestResponseDto);
+  // }
 
-  @Get('child/:childId')
-  getResponsesByChild(@Param('childId') childId: string) {
-    return this.testResponseService.getResponsesByChild(childId)
-  }
+  // @Get('child/:childId')
+  // getResponsesByChild(@Param('childId') childId: string) {
+  //   return this.testResponseService.getResponsesByChild(childId)
+  // }
 }

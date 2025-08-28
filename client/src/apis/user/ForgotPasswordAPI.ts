@@ -1,4 +1,4 @@
-import { getToken } from "../../utils/getToken";
+import { getParentToken } from "../../utils/getToken";
 
 type ForgotPasswordForm = {
     email: string;
@@ -10,7 +10,7 @@ export const ForgotPasswordAPI = async (data: ForgotPasswordForm) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${getToken()}`
+                'Authorization': `Bearer ${getParentToken()}`
             },
             body: JSON.stringify({ email: data.email })
         });

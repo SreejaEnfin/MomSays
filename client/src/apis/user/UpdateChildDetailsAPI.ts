@@ -1,5 +1,5 @@
 import type { Child } from "../../types/Child";
-import { getToken } from "../../utils/getToken";
+import { getParentToken } from "../../utils/getToken";
 
 export const UpdateChildDetailsAPI = async (data: Child) => {
     try {
@@ -7,7 +7,7 @@ export const UpdateChildDetailsAPI = async (data: Child) => {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${getToken()}`
+                'Authorization': `Bearer ${getParentToken()}`
             },
             body: JSON.stringify(data)
         })
